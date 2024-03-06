@@ -30,7 +30,7 @@ else
    do
       echo "animate goto ${i}" >> "${NAME}.vmd"
       pi=$(printf "%05d" $i)
-      echo "render Tachyon movie-${pi}.dat" >> "${NAME}.vmd"
+      echo "render Tachyon ${NAME}-${pi}.dat" >> "${NAME}.vmd"
    done
    echo "quit" >> "${NAME}.vmd"
 fi
@@ -41,7 +41,7 @@ vmd -dispdev text -e "${NAME}.vmd"
 for (( i=0; i<nImages; i++ ))
 do
    pi=$(printf "%05d" $i)
-   file="movie-${pi}"
+   file="${NAME}-${pi}"
    echo "Rendering $file"
    sed -i 's/Resolution.*/Resolution 7664 4164/' "$file".dat
    tachyon  -aasamples 12 "$file".dat -format TARGA -o "$file".tga
@@ -49,4 +49,4 @@ do
    rm "$file".tga
 done
 
-ffmpeg -framerate 10 -pattern_type glob -i 'movie-*.png' -vf "crop=trunc(iw/2)*2:trunc(ih/2)*2" -c:v libx264 -pix_fmt yuv420p movie.mp4
+ffmpeg -framerate 10 -pattern_type glob -i "${NAME}-*.png" -vf "crop=trunc(iw/2)*2:trunc(ih/2)*2" -c:v libx264 -pix_fmt yuv420p "${NAME}".mp4
